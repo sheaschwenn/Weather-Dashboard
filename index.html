@@ -18,19 +18,25 @@
         <aside vlass = "col-md-4">
             <nav class="navbar navbar-light bg-light ">
                 <form class="form-inline">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    <input id = "search-input"class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button id ="search-btn" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
             </nav>
+            <ul>
+
+            </ul>
         </aside>
         <main class="col-md-8 container-fluid">
             <section class="row">
                 <h2>Today's Weather</h2>
                 <!-- where todays weather will go  -->
+                <p id = "temp"></p>
+                <p id = "wind"></p>
+                <p id = "humidity"></p>
             </section>
 
             <section class="row">
-                <div class="card col-lg-2.4" style="width: 18rem;">
+                <div id = "day-1"class="card col-lg-2.4" style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">Card title</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
@@ -42,7 +48,7 @@
                     </div>
                 </div>
 
-                <div class="card col-lg-2.4" style="width: 18rem;">
+                <div id = "day-2"class="card col-lg-2.4" style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">Card title</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
@@ -54,7 +60,7 @@
                     </div>
                 </div>
 
-                <div class="card col-lg-2.4" style="width: 18rem;">
+                <div id = "day-3"class="card col-lg-2.4" style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">Card title</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
@@ -66,7 +72,7 @@
                     </div>
                 </div>
 
-                <div class="card col-lg-2.4" style="width: 18rem;">
+                <div id = "day-4" class="card col-lg-2.4" style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">Card title</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
@@ -78,7 +84,7 @@
                     </div>
                 </div>
 
-                <div class="card col-lg-2.4" style="width: 18rem;">
+                <div id = "day-5"class="card col-lg-2.4" style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">Card title</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
