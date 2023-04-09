@@ -22,7 +22,10 @@ var wind = document.getElementById("wind")
 var humidity = document.getElementById("humidity")
 var apiKey = 'ed8994c929cd1af2ce5f66056c36cdc2'
 var ul = document.querySelector("ul")
-var li = document.createElement("li")
+
+var forecast = document.getElementById("forecast")
+
+
 
 var date1 = document.getElementById("date-1")
 var icon1 = document.getElementById("icon1")
@@ -55,12 +58,51 @@ var temp5 = document.getElementById("temp5")
 var wind5 = document.getElementById("wind5")
 var humidity5 = document.getElementById("humidity5")
 
-
+var cities = JSON.parse(localStorage.getItem("searchHistory"))
+searchCity(cities[cities.length-1])
 function getApi(event) {
     event.preventDefault()
 
 
     var city = searchInput.value
+    searchCity(city)
+    
+}
+
+searchButton.addEventListener('click', getApi)
+
+ul.addEventListener("click",function(event){
+    if(event.target.matches("button")){
+       searchCity(event.target.textContent)
+    }
+})
+
+function searchCity(city){
+    var searchHistory = []
+    if(localStorage.getItem("searchHistory")){
+        searchHistory = JSON.parse(localStorage.getItem("searchHistory"))
+    }
+    function storeSearch(){
+        if(!searchHistory.includes(city)){
+        searchHistory.push(city)
+        localStorage.setItem("searchHistory", JSON.stringify(searchHistory)) 
+        }
+    }
+    function getSearch(){
+      var history =  JSON.parse(localStorage.getItem("searchHistory"))
+      ul.textContent = " "
+        for(var i = 0; i <searchHistory.length; i++){
+            var button = document.createElement("button")
+            button.textContent = searchHistory[i]
+            var li = document.createElement("li")
+            li.appendChild(button)
+            ul.appendChild(li);
+        }
+        console.log(history)
+    }
+
+    storeSearch()
+    getSearch()
 
 
     var requestUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + "&units=imperial&appid=" + apiKey
@@ -75,7 +117,7 @@ function getApi(event) {
         .then(function (data) {
             // Use the console to examine the response
             console.log(data);
-
+            
             var id = data.weather[0].icon
             console.log(id)
             var iconUrl = 'https://openweathermap.org/img/w/' + id + '.png'
@@ -83,13 +125,11 @@ function getApi(event) {
             var unix = data.dt
             var date = Date(unix * 1000).slice(0, 10)
 
-            console.log(typeof longDate)
             place.textContent = city + " " + date
             temp.textContent = "Current temperature: " + data.main.temp+" °F"
             wind.textContent = "Current wind: " + data.wind.speed + "mph"
             humidity.textContent = "Current Humidity: " + data.main.humidity + "%"
-            li.textContent = city
-            ul.appendChild(li)
+            
             // TODO: Loop through the data and generate your HTML
             // for(var i =0;i<data.length; i++){
             //   var userName = document.createElement("h3");
@@ -112,49 +152,62 @@ function getApi(event) {
             // Use the console to examine the response
             console.log(data);
 
-            var id1 = data.list[6].weather[0].icon
-            var iconUrl1 = 'https://openweathermap.org/img/w/' + id1 + '.png'
-            icon1.setAttribute("src", iconUrl1)
+            forecast.textContent = ""
+            for(var i =6 ; i< data.list.length;i = i+8){
+                var id1 = data.list[i].weather[0].icon
+                var iconUrl1 = 'https://openweathermap.org/img/w/' + id1 + '.png'
+                forecast.innerHTML += `     <div id = "day-1" class="card w-20 col-lg-2.4" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 id ="date-1" class= card-title">${data.list[i].dt_txt.slice(5, 11)}</h5>
+                    <img id =icon1 src="${iconUrl1}"/>
+                    <h6 id="temp1">${"Temperature: " + data.list[i].main.temp+" °F"} </h6>
+                    <h6 id="wind1"> ${"Wind: " + data.list[i].wind.speed+ " mph"}</h6>
+                    <h6 id="humidity1">${"Humidity: " + data.list[i].main.humidity+"%"} </h6>
+            
+                </div>
+            </div>`
+            }
+            // var id1 = data.list[6].weather[0].icon
+            // var iconUrl1 = 'https://openweathermap.org/img/w/' + id1 + '.png'
+            // icon1.setAttribute("src", iconUrl1)
 
-            date1.textContent = data.list[6].dt_txt.slice(5, 11)
-            temp1.textContent = "Temperature: " + data.list[6].main.temp+" °F"
-            wind1.textContent = "Wind: " + data.list[6].wind.speed+ " mph"
-            humidity1.textContent = "Humidity: " + data.list[6].main.humidity+"%"
-
-
-            var id2 = data.list[14].weather[0].icon
-            var iconUrl2 = 'https://openweathermap.org/img/w/' + id2 + '.png'
-            icon2.setAttribute("src", iconUrl2)
-            date2.textContent = data.list[14].dt_txt.slice(5, 11)
-            temp2.textContent = "Temperature: " + data.list[14].main.temp+" °F"
-            wind2.textContent = "Wind: " + data.list[14].wind.speed+ " mph"
-            humidity2.textContent = "Humidity: " + data.list[14].main.humidity+"%"
-
-            var id3 = data.list[22].weather[0].icon
-            var iconUrl3 = 'https://openweathermap.org/img/w/' + id3 + '.png'
-            icon3.setAttribute("src", iconUrl3)
-            date3.textContent = data.list[22].dt_txt.slice(5, 11)
-            temp3.textContent = "Temperature: " + data.list[22].main.temp+" °F"
-            wind3.textContent = "Wind: " + data.list[22].wind.speed+ " mph"
-            humidity3.textContent = "Humidity: " + data.list[22].main.humidity+"%"
-
-            var id4 = data.list[22].weather[0].icon
-            var iconUrl4 = 'https://openweathermap.org/img/w/' + id4 + '.png'
-            icon4.setAttribute("src", iconUrl4)
-            date4.textContent = data.list[30].dt_txt.slice(5, 11)
-            temp4.textContent = "Temperature: " + data.list[30].main.temp+" °F"
-            wind4.textContent = "Wind: " + data.list[30].wind.speed+ " mph"
-            humidity4.textContent = "Humidity: " + data.list[30].main.humidity+"%"
+            // date1.textContent = data.list[6].dt_txt.slice(5, 11)
+            // temp1.textContent = "Temperature: " + data.list[6].main.temp+" °F"
+            // wind1.textContent = "Wind: " + data.list[6].wind.speed+ " mph"
+            // humidity1.textContent = "Humidity: " + data.list[6].main.humidity+"%"
 
 
-            var id5 = data.list[38].weather[0].icon
-            var iconUrl5 = 'https://openweathermap.org/img/w/' + id5 + '.png'
-            icon5.setAttribute("src", iconUrl5)
-            date5.textContent = data.list[38].dt_txt.slice(5, 11)
-            temp5.textContent = "Temperature: " + data.list[38].main.temp+" °F"
-            wind5.textContent = "Wind: " + data.list[38].wind.speed+ " mph"
-            humidity5.textContent = "Humidity: " + data.list[38].main.humidity+"%"
+            // var id2 = data.list[14].weather[0].icon
+            // var iconUrl2 = 'https://openweathermap.org/img/w/' + id2 + '.png'
+            // icon2.setAttribute("src", iconUrl2)
+            // date2.textContent = data.list[14].dt_txt.slice(5, 11)
+            // temp2.textContent = "Temperature: " + data.list[14].main.temp+" °F"
+            // wind2.textContent = "Wind: " + data.list[14].wind.speed+ " mph"
+            // humidity2.textContent = "Humidity: " + data.list[14].main.humidity+"%"
+
+            // var id3 = data.list[22].weather[0].icon
+            // var iconUrl3 = 'https://openweathermap.org/img/w/' + id3 + '.png'
+            // icon3.setAttribute("src", iconUrl3)
+            // date3.textContent = data.list[22].dt_txt.slice(5, 11)
+            // temp3.textContent = "Temperature: " + data.list[22].main.temp+" °F"
+            // wind3.textContent = "Wind: " + data.list[22].wind.speed+ " mph"
+            // humidity3.textContent = "Humidity: " + data.list[22].main.humidity+"%"
+
+            // var id4 = data.list[22].weather[0].icon
+            // var iconUrl4 = 'https://openweathermap.org/img/w/' + id4 + '.png'
+            // icon4.setAttribute("src", iconUrl4)
+            // date4.textContent = data.list[30].dt_txt.slice(5, 11)
+            // temp4.textContent = "Temperature: " + data.list[30].main.temp+" °F"
+            // wind4.textContent = "Wind: " + data.list[30].wind.speed+ " mph"
+            // humidity4.textContent = "Humidity: " + data.list[30].main.humidity+"%"
+
+
+            // var id5 = data.list[38].weather[0].icon
+            // var iconUrl5 = 'https://openweathermap.org/img/w/' + id5 + '.png'
+            // icon5.setAttribute("src", iconUrl5)
+            // date5.textContent = data.list[38].dt_txt.slice(5, 11)
+            // temp5.textContent = "Temperature: " + data.list[38].main.temp+" °F"
+            // wind5.textContent = "Wind: " + data.list[38].wind.speed+ " mph"
+            // humidity5.textContent = "Humidity: " + data.list[38].main.humidity+"%"
         });
 }
-
-searchButton.addEventListener('click', getApi)
