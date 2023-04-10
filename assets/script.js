@@ -1,18 +1,4 @@
-// Pseduo code 
-// GIVEN a weather dashboard with form inputs
-// WHEN I search for a city
-// need to create a search bar 
-// user input will be sent into city 
-// clear out previous deal 
-// figure out how to use the geo, (maybe use their variables in the function to insert into the url?)
-// THEN I am presented with current and future conditions for that city and that city is added to the search history
-// WHEN I view current weather conditions for that city
-// THEN I am presented with the city name, the date, an icon representation of weather conditions, the temperature, the humidity, and the wind speed
-// WHEN I view future weather conditions for that city
-// THEN I am presented with a 5-day forecast that displays the date, an icon representation of weather conditions, the temperature, the wind speed, and the humidity
-// WHEN I click on a city in the search history
-// THEN I am again presented with current and future conditions for that city
-// api key 
+// variables pointing to my html doc
 var searchInput = document.getElementById("search-input")
 var searchButton = document.getElementById("search-btn")
 var place = document.getElementById("place")
@@ -20,77 +6,35 @@ var icon = document.getElementById("icon")
 var temp = document.getElementById("temp");
 var wind = document.getElementById("wind")
 var humidity = document.getElementById("humidity")
-var apiKey = 'ed8994c929cd1af2ce5f66056c36cdc2'
+
 var ul = document.querySelector("ul")
 
 var forecast = document.getElementById("forecast")
 
+var apiKey = 'ed8994c929cd1af2ce5f66056c36cdc2'
 
-
-var date1 = document.getElementById("date-1")
-var icon1 = document.getElementById("icon1")
-var temp1 = document.getElementById("temp1")
-var wind1 = document.getElementById("wind1")
-var humidity1 = document.getElementById("humidity1")
-
-
-var date2 = document.getElementById("date-2")
-var icon2 = document.getElementById("icon2")
-var temp2 = document.getElementById("temp2")
-var wind2 = document.getElementById("wind2")
-var humidity2 = document.getElementById("humidity2")
-
-var date3 = document.getElementById("date-3")
-var icon3 = document.getElementById("icon3")
-var temp3 = document.getElementById("temp3")
-var wind3 = document.getElementById("wind3")
-var humidity3 = document.getElementById("humidity3")
-
-var date4 = document.getElementById("date-4")
-var icon4 = document.getElementById("icon4")
-var temp4 = document.getElementById("temp4")
-var wind4 = document.getElementById("wind4")
-var humidity4 = document.getElementById("humidity4")
-
-var date5 = document.getElementById("date-5")
-var icon5 = document.getElementById("icon5")
-var temp5 = document.getElementById("temp5")
-var wind5 = document.getElementById("wind5")
-var humidity5 = document.getElementById("humidity5")
-
-var cities = JSON.parse(localStorage.getItem("searchHistory"))
-searchCity(cities[cities.length-1])
-function getApi(event) {
-    event.preventDefault()
-
-
-    var city = searchInput.value
-    searchCity(city)
-    
-}
-
-searchButton.addEventListener('click', getApi)
-
-ul.addEventListener("click",function(event){
-    if(event.target.matches("button")){
-       searchCity(event.target.textContent)
-    }
-})
-
+// setting and getting user input into and from local storage
 function searchCity(city){
+    // creating an empty array to push the user input into
     var searchHistory = []
+    // if there is anything local storage then search history equals that an not just the empty array
     if(localStorage.getItem("searchHistory")){
         searchHistory = JSON.parse(localStorage.getItem("searchHistory"))
     }
+    // function to store the user search history
     function storeSearch(){
+        // if search history doesn't already include the users input then add it to the search history array
         if(!searchHistory.includes(city)){
         searchHistory.push(city)
+        // set search history into local storage 
         localStorage.setItem("searchHistory", JSON.stringify(searchHistory)) 
         }
     }
+    // getting the users search history from local storage to render on the page
     function getSearch(){
-      var history =  JSON.parse(localStorage.getItem("searchHistory"))
-      ul.textContent = " "
+        // clearing anything in ul before creating another button
+      ul.textContent = ""
+    //   loop through all items within search history an making a button for them 
         for(var i = 0; i <searchHistory.length; i++){
             var button = document.createElement("button")
             button.textContent = searchHistory[i]
@@ -98,17 +42,16 @@ function searchCity(city){
             li.appendChild(button)
             ul.appendChild(li);
         }
-        console.log(history)
     }
 
     storeSearch()
     getSearch()
 
-
+// two urls, first one for current data the second one for the forecast
     var requestUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + "&units=imperial&appid=" + apiKey
     var requestUrlForecast = 'https://api.openweathermap.org/data/2.5/forecast?q=' + city + "&units=imperial&appid=" + apiKey
 
-
+// fetching current data 
     fetch(requestUrl)
 
         .then(function (response) {
@@ -118,31 +61,25 @@ function searchCity(city){
             // Use the console to examine the response
             console.log(data);
             
+            // adding current weather icon 
             var id = data.weather[0].icon
             console.log(id)
+            // inserting the source to my html to render the current icon
             var iconUrl = 'https://openweathermap.org/img/w/' + id + '.png'
             icon.setAttribute("src", iconUrl)
+            // setting the unix time to a date and shortening it to only contain what I need
             var unix = data.dt
             var date = Date(unix * 1000).slice(0, 10)
 
+            // heading for the current city and day
             place.textContent = city + " " + date
             temp.textContent = "Current temperature: " + data.main.temp+" °F"
             wind.textContent = "Current wind: " + data.wind.speed + "mph"
             humidity.textContent = "Current Humidity: " + data.main.humidity + "%"
             
-            // TODO: Loop through the data and generate your HTML
-            // for(var i =0;i<data.length; i++){
-            //   var userName = document.createElement("h3");
-            //   var link = document.createElement("a");
-            //   userName.textContent = data[i].login;
-            //   link.textContent = data[i].html_url
-
-            //   userContainer.append(userName);
-            //   userContainer.append(link)
-            // }
         });
 
-
+        // fetch request for the forecast data 
     fetch(requestUrlForecast)
 
         .then(function (response) {
@@ -151,11 +88,14 @@ function searchCity(city){
         .then(function (data) {
             // Use the console to examine the response
             console.log(data);
-
+            // clearing the previous content from the forecast id to inject more html for each day
             forecast.textContent = ""
+            // creating a for loop to loop through all 5 days of the data 
             for(var i =6 ; i< data.list.length;i = i+8){
+                // variable to store the code for weather icon
                 var id1 = data.list[i].weather[0].icon
                 var iconUrl1 = 'https://openweathermap.org/img/w/' + id1 + '.png'
+                // inserting html for each day with temp,wind speed and humidity
                 forecast.innerHTML += `     <div id = "day-1" class="card w-20 col-lg-2.4" style="width: 18rem;">
                 <div class="card-body">
                     <h5 id ="date-1" class= card-title">${data.list[i].dt_txt.slice(5, 11)}</h5>
@@ -167,47 +107,30 @@ function searchCity(city){
                 </div>
             </div>`
             }
-            // var id1 = data.list[6].weather[0].icon
-            // var iconUrl1 = 'https://openweathermap.org/img/w/' + id1 + '.png'
-            // icon1.setAttribute("src", iconUrl1)
-
-            // date1.textContent = data.list[6].dt_txt.slice(5, 11)
-            // temp1.textContent = "Temperature: " + data.list[6].main.temp+" °F"
-            // wind1.textContent = "Wind: " + data.list[6].wind.speed+ " mph"
-            // humidity1.textContent = "Humidity: " + data.list[6].main.humidity+"%"
-
-
-            // var id2 = data.list[14].weather[0].icon
-            // var iconUrl2 = 'https://openweathermap.org/img/w/' + id2 + '.png'
-            // icon2.setAttribute("src", iconUrl2)
-            // date2.textContent = data.list[14].dt_txt.slice(5, 11)
-            // temp2.textContent = "Temperature: " + data.list[14].main.temp+" °F"
-            // wind2.textContent = "Wind: " + data.list[14].wind.speed+ " mph"
-            // humidity2.textContent = "Humidity: " + data.list[14].main.humidity+"%"
-
-            // var id3 = data.list[22].weather[0].icon
-            // var iconUrl3 = 'https://openweathermap.org/img/w/' + id3 + '.png'
-            // icon3.setAttribute("src", iconUrl3)
-            // date3.textContent = data.list[22].dt_txt.slice(5, 11)
-            // temp3.textContent = "Temperature: " + data.list[22].main.temp+" °F"
-            // wind3.textContent = "Wind: " + data.list[22].wind.speed+ " mph"
-            // humidity3.textContent = "Humidity: " + data.list[22].main.humidity+"%"
-
-            // var id4 = data.list[22].weather[0].icon
-            // var iconUrl4 = 'https://openweathermap.org/img/w/' + id4 + '.png'
-            // icon4.setAttribute("src", iconUrl4)
-            // date4.textContent = data.list[30].dt_txt.slice(5, 11)
-            // temp4.textContent = "Temperature: " + data.list[30].main.temp+" °F"
-            // wind4.textContent = "Wind: " + data.list[30].wind.speed+ " mph"
-            // humidity4.textContent = "Humidity: " + data.list[30].main.humidity+"%"
-
-
-            // var id5 = data.list[38].weather[0].icon
-            // var iconUrl5 = 'https://openweathermap.org/img/w/' + id5 + '.png'
-            // icon5.setAttribute("src", iconUrl5)
-            // date5.textContent = data.list[38].dt_txt.slice(5, 11)
-            // temp5.textContent = "Temperature: " + data.list[38].main.temp+" °F"
-            // wind5.textContent = "Wind: " + data.list[38].wind.speed+ " mph"
-            // humidity5.textContent = "Humidity: " + data.list[38].main.humidity+"%"
+           
         });
 }
+// making page have the last looked up city when page is rendered 
+// parsing the array of search history and setting
+var cities = JSON.parse(localStorage.getItem("searchHistory"))
+// calling the function searchCity for the last city searched 
+searchCity(cities[cities.length-1])
+
+// calling the search city function to render city searched, and store user input preventing form default
+function getApi(event) {
+    event.preventDefault()
+
+ var city = searchInput.value
+    searchCity(city)
+    
+}
+
+// putting an event listener on the search button
+searchButton.addEventListener('click', getApi)
+
+// adding an event listener to buttons in the search history to then render info for past searches 
+ul.addEventListener("click",function(event){
+    if(event.target.matches("button")){
+       searchCity(event.target.textContent)
+    }
+})
