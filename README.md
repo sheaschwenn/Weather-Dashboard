@@ -16,22 +16,11 @@ Dashboard showing the current weather as well as the forecast for the next five 
 
 [Visit Weather Dashboard](https://sheaschwenn.github.io/Weather-Dashboard/)
 
-Your GitHub profile is an extremely important aspect of your public identity as a developer. A well-crafted one allows you to show off your work to other developers as well as potential employers. An important component of your GitHub profile—and one that many new developers often overlook—is the README.md file.
-
-The quality of a README often differentiates a good project from a bad project. A good one takes advantage of the opportunity to explain and showcase what your application does, justify the technologies used, and even talk about some of the challenges you faced and features you hope to implement in the future. A good README helps you stand out among the large crowd of developers putting their work on GitHub.
-
-There's no one right way to structure a good README. There is one very wrong way, however, and that is to not include a README at all or to create a very anemic one. This guide outlines a few best practices. As you progress in your career, you will develop your own ideas about what makes a good README.
-
-At a minimum, your project README needs a title and a short description explaining the what, why, and how. What was your motivation? Why did you build this project? (Note: The answer is not "Because it was a homework assignment.") What problem does it solve? What did you learn? What makes your project stand out? 
-
-Lastly, if your project is deployed, include a link to the deployed application here.
-
-If you're new to Markdown, read the GitHub guide on [Mastering Markdown](https://guides.github.com/features/mastering-markdown/).
-
-If you need an example of a good README, check out [the VSCode repository](https://github.com/microsoft/vscode).
+A weather dashboard that takes a users desired city as input and renders current weather data as well as a five day forecast.  Each item that a user searches is added to their search history which will persist even when the page is refreshed.  Each item in the search history is also clickable, when clicked the respective updated data for that city is shown. 
 
 
-![Site Langing Page](./site.gif)
+
+![Weather Dashboard](./assets/weather-dashboard.gif)
 
 
 ## Table of Contents 
@@ -47,97 +36,58 @@ If you need an example of a good README, check out [the VSCode repository](https
 
 ## JavaScript Example
 
-What are the steps required to install your project? Provide a step-by-step description of how to get the development environment running.
+Creating a fetch request to access the five day weather forecast data. Using a for loop to iterate through and inject HTML with dynamic variables to create a card that contains temperature, wind speed, humidity and representative icon for each day.  
 
 
-```html
-<div class="header">
-        <h1>Hori<span class="seo">seo</span>n</h1>
-        <div>
-            <ul>
-                <li>
-                    <a href="#search-engine-optimization">Search Engine Optimization</a>
-                </li>
-                <li>
-                    <a href="#online-reputation-management">Online Reputation Management</a>
-                </li>
-                <li>
-                    <a href="#social-media-marketing">Social Media Marketing</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-```
+```js
+ fetch(requestUrlForecast)
 
-Converting the above non-semantic div with the class of 'header' to an appropriate [<header> semantic element](https://www.w3schools.com/html/html5_semantic_elements.asp). 
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            
+            forecast.textContent = ""
+            for (var i = 6; i < data.list.length; i = i + 8) {
+                
+                var id1 = data.list[i].weather[0].icon
+                
+                var iconUrl1 = 'https://openweathermap.org/img/w/' + id1 + '.png'
+                
+                forecast.innerHTML += `     <div id = "day-1" class="card w-20 col-lg-2.4" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 id ="date-1" class= card-title">${data.list[i].dt_txt.slice(5, 11)}</h5>
+                    <img id =icon1 src="${iconUrl1}"/>
+                    <h6 id="temp1">${"Temperature: " + data.list[i].main.temp + " °F"} </h6>
+                    <h6 id="wind1"> ${"Wind: " + data.list[i].wind.speed + " mph"}</h6>
+                    <h6 id="humidity1">${"Humidity: " + data.list[i].main.humidity + "%"} </h6>
+            
+                </div>
+            </div>`
+            }
 
-```html
-<header>
-        <h1>Hori<span class="seo">seo</span>n</h1>
-        <nav>
-            <ul>
-                <li>
-                    <a href="#search-engine-optimization">Search Engine Optimization</a>
-                </li>
-                <li>
-                    <a href="#online-reputation-management">Online Reputation Management</a>
-                </li>
-                <li>
-                    <a href="#social-media-marketing">Social Media Marketing</a>
-                </li>
-            </ul>
-        </nav>
-    </header>
+        });
 
 ```
 
-This change require some additional modification to the CSS selector: 
 
-```css
-.header {
-    padding: 20px;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    background-color: #2a607c;
-    color: #ffffff;
-}
-```
 
-No longer targeting the element on the page with the class of 'header' but instead the css selector targeting the 'header' element 
 
-```css
-header {
-    padding: 20px;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    background-color: #2a607c;
-    color: #ffffff;
-}
 
-```
 
 ## Usage 
+Dashboard that will display a users searched citys current weather conditions as well as the five day forecast for that city.  
 
-Provide instructions and examples for use. Include screenshots as needed. 
-
-To add a screenshot, create an `assets/images` folder in your repository and upload your screenshot to it. Then, using the relative filepath, add it to your README using the following syntax:
-
-```md
-![alt text](assets/images/screenshot.png)
-```
+![Weather Dashboard](assets/weather-dashboard.png)
 
 
 ## Learning Points 
+This project was a great introduction to APIs along with a touch of bootstrap.  I also got to solidify my understanding of local storage and use a for loop to inject html into my webpage.  
 
-
-This is a good place to Explain what you Learned by creating this application.
-This is a great way to remind about all of the Complex Skills you now have.
-If the user is less experienced than you:
-They will be impressed by what you can do!
-
-If the user is more experienced than you:
-They will be impressed by what you can do!
-
-Remember, it is easy to forget exactly how Valuable and Impressive your skills are, as well as How Much You’ve Learned!
-So quantify that here!
+* APIs
+* bootstrap
+* innerHTML
+* continuation of local storage and for loops 
 
 
 ## Author Info
@@ -145,22 +95,17 @@ So quantify that here!
 ### Shea Schwennicke
 
 
-* [Portfolio](https://youtu.be/bHX54GCrDB4)
-* [LinkedIn](https://youtu.be/bHX54GCrDB4)
-* [Github](https://youtu.be/bHX54GCrDB4)
+* [Portfolio](https://sheaschwenn.github.io/Portfolio/)
+* [LinkedIn](https://www.linkedin.com/in/shea-schwennicke-76a378210/)
+* [Github](https://github.com/sheaschwenn)
 
-The user has looked through your whole README, and gotten familiar with your application. 
-This is where you take credit, and make it easy for them to learn more about you!
-Direct them to the following:
-- Your GitHub Profile
-- Your LinkedIn
-- Your Portfolio Website
-- And Anything Else You Want!
 
 
 
 ## License
+MIT License
 
+For more information please refer to the LICENSE in the repo.
 
 
 ---
